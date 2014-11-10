@@ -1,0 +1,29 @@
+{
+  "name": "node-sbus",
+  "version": "0.0.1",
+  "description": "A library for using Azure Service Bus",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmspring/node-sbus"
+  },
+  "keywords": [
+    "azure",
+    "servicebus",
+    "queue",
+    "eventhub",
+    "amqp"
+  ],
+  "author": "Jim Spring <jmspring@gmail.com> (http://innerdot.com)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/jmspring/node-sbus/issues"
+  },
+  "dependencies": {
+    "node-qpid": "git://github.com/jmspring/node-qpid#1a8982b",
+    "minimist": "*"
+  }
+}
