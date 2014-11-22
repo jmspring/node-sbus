@@ -23,7 +23,11 @@
     "url": "https://github.com/jmspring/node-sbus/issues"
   },
   "dependencies": {
-    "node-qpid": "git://github.com/jmspring/node-qpid#1a8982b",
+    "node-qpid": "git://github.com/jmspring/node-qpid#qpid_proton_0.8_support",
+    "request": "*",
+    "utf8": "*",
+    "xml2js": "*",
+    "eyes": "*",
     "minimist": "*"
   }
 }
