@@ -38,7 +38,7 @@ hub.getPartition(id, consumer_group, function(err, result) {
   }
 
   var i = 0;
-  var batch = 4;    // number of messages to send at a time
+  var batch = 10;    // number of messages to send at a time
   var starttime = new Date().getTime();
 
   function send_messages() {
@@ -48,7 +48,7 @@ hub.getPartition(id, consumer_group, function(err, result) {
         partition.send(message, null, callback);          
       });
     }        
-    async.series(queue, function(err, res) {
+    async.parallel(queue, function(err, res) {
       if(err) {
         console.log("Error occurred: " + err);
       } else {

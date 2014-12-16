@@ -40,7 +40,7 @@ hub.getEventProcessor(consumer_group, function(err, result) {
       process.exit(1);
     } else {
       var i = 0;
-      var batch = 4;    // number of messages to send in parallel
+      var batch = 10;    // number of messages to send in parallel
       var starttime = new Date().getTime();
 
 
@@ -51,7 +51,7 @@ hub.getEventProcessor(consumer_group, function(err, result) {
             processor.send(message, null, callback);          
           });
         }        
-        async.series(queue, function(err, res) {
+        async.parallel(queue, function(err, res) {
           if(err) {
             console.log("Error occurred: " + err);
           } else {
