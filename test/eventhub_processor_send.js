@@ -28,6 +28,26 @@ if(!hub) {
   process.exit(1);
 }
 
+var resolved = 0;
+var errors = 0;
+var startTime = new Date().getTime();
+function message_callback(err, msg) {
+  if(err) {
+    errors++;
+  }
+  resolved++;
+}
+
+function status_check() {
+  if(resolved == count) {
+    var endTime = new Date().getTime();
+    console.log("Done: %d sent, %d errors, %d ms", resolved, errors, (endTime - startTime));
+  } else {
+    console.log("Sent: " + resolved + " of " + count);
+    setTimeout(status_check, 2500);
+  }
+}
+
 hub.getEventProcessor(consumer_group, function(err, result) {
   var processor = result;
   if(err) {
@@ -40,32 +60,37 @@ hub.getEventProcessor(consumer_group, function(err, result) {
       process.exit(1);
     } else {
       var i = 0;
-      var batch = 10;    // number of messages to send in parallel
-      var starttime = new Date().getTime();
-
-
-      function send_messages() {
+      var batch = 500;    // number of messages to send in parallel
+      
+      function send_batch() {
         var queue = [];
-        for(var j = 0; j < batch && i < count; j++, i++) {
+        
+        function add_message(idx) {
           queue.push(function(callback) {
-            processor.send(message, null, callback);          
+            processor.send(message, null, function(err, result) {
+              message_callback(err, result);
+              callback(err);
+            })
           });
-        }        
-        async.parallel(queue, function(err, res) {
-          if(err) {
-            console.log("Error occurred: " + err);
-          } else {
-            if(i < count) {
-              send_messages();
+        }
+      
+        for(var j = 0; j < batch && i < count; i++, j++) {
+          add_message(i);          
+        }
+
+        if(queue.length > 0) {        
+          async.parallel(queue, function(err, res) {
+            if(err) {
+              process.exit(1);
             } else {
-              var stoptime = new Date().getTime();
-              console.log("Message(s) sent.  Count: " + i + ", Total time: " + (stoptime - starttime) + "ms");
+              send_batch();
             }
-          }
-        });
+          });
+        }
       }
       
-      send_messages();
+      setTimeout(status_check, 2500);
+      send_batch();
     }
   });
 });

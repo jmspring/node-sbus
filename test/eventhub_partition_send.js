@@ -38,7 +38,7 @@ hub.getPartition(id, consumer_group, function(err, result) {
   }
 
   var i = 0;
-  var batch = 10;    // number of messages to send at a time
+  var batch = 100;    // number of messages to send at a time
   var starttime = new Date().getTime();
 
   function send_messages() {
