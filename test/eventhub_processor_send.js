@@ -31,16 +31,17 @@ if(!hub) {
 var resolved = 0;
 var errors = 0;
 var startTime = new Date().getTime();
+var endTime = null;
 function message_callback(err, msg) {
   if(err) {
     errors++;
   }
   resolved++;
+  endTime = new Date().getTime();
 }
 
 function status_check() {
   if(resolved == count) {
-    var endTime = new Date().getTime();
     console.log("Done: %d sent, %d errors, %d ms", resolved, errors, (endTime - startTime));
   } else {
     console.log("Sent: " + resolved + " of " + count);
@@ -54,11 +55,13 @@ hub.getEventProcessor(consumer_group, function(err, result) {
     console.log("Unable to allocate event processor.  Error: " + err);
     process.exit(1);
   }
+
   processor.init(null, null, function(err, result) {
     if(err) {
       console.log("error initializing: " + err);
       process.exit(1);
     } else {
+    
       var i = 0;
       var batch = 500;    // number of messages to send in parallel
       
