@@ -23,7 +23,8 @@
     "url": "https://github.com/jmspring/node-sbus/issues"
   },
   "dependencies": {
-    "node-qpid": "git://github.com/jmspring/node-qpid#eventhub-base-support-0.3",
+    "node-qpid": "git://github.com/jmspring/node-qpid#eventhub-base-support-0.4",
+    "node-amqp-encoder": "git://github.com/noodlefrenzy/node-amqp-encoder.git",
     "azure-storage": "*",
     "async": "*",
     "node-uuid": "*",

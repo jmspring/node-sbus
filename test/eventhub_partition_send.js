@@ -8,9 +8,10 @@ var optimist = require('optimist')
     .options('a', { alias : 'accessuser' })
     .options('p', { alias : 'accesspass' })
     .options('m', { alias : 'message' })
-    .options('d', { alias : 'partitionid', default : '0'})    
+    .options('d', { alias : 'partitionid', default : null})    
     .options('g', { alias : 'consumergroup', default : '$default' })
     .options('c', { alias : 'count', default : 1 })
+    .options('k', { alias : 'partitionkey', default : null })
     .boolean('r')
     .demand(['e', 'n', 'a', 'p', 'm'])
     .usage("$0 -e eventhub -n eventhub_namespace -a eventhub_username -p eventhub_password -d partition_id -m message [ -g consumergroup ]")
@@ -25,6 +26,14 @@ var id = optimist.argv.partitionid;
 var message = optimist.argv.message;
 var count = optimist.argv.count;
 var random = optimist.argv.r
+var partition_key = optimist.argv.partitionkey;
+
+if((id != null) && (partition_key != null)) {
+  console.log("Either 'partitionid' or 'partitionkey' can be specified, not both");
+  process.exit(1);
+} else if((partition_key == null) && (id == null)) {
+  id = "0";     // default to partition id 0
+}
 
 var hub = eventhub.EventHub.Instance(ehnamespace, ehname, access_user, access_pass);
 if(!hub) {
@@ -34,6 +43,7 @@ if(!hub) {
 
 function do_work(partition) {
   var i = 0;
+  var sent = 0;
   var batch = 100;    // number of messages to send at a time
   var starttime = new Date().getTime();
 
@@ -41,9 +51,20 @@ function do_work(partition) {
     var queue = [];
     for(var j = 0; j < batch && i < count; j++, i++) {
       queue.push(function(callback) {
-        partition.send(message, null, callback);          
+      try {
+        partition.send(message, partition_key, function(err, res) {
+          if(err) {
+            console.log(err)
+          }
+          callback(err);
+        });
+      } catch(err) {
+        console.log("Send fail");
+        console.log(err);
+      }          
       });
     }        
+
     async.parallel(queue, function(err, res) {
       if(err) {
         console.log("Error occurred: " + err);
@@ -61,22 +82,41 @@ function do_work(partition) {
   send_messages();
 }
 
-if(!random) {
-  hub.getPartition(id, consumer_group, function(err, result) {
-    if(err) {
-      console.log("Unable to retrieve partition.  Error: " + err);
-      process.exit(1);
-    } else {
-      do_work(result); 
-    }
-  });
+if(partition_key == null) {
+  if(!random) {
+    hub.getPartition(id, consumer_group, function(err, result) {
+      if(err) {
+        console.log("Unable to retrieve partition.  Error: " + err);
+        process.exit(1);
+      } else {
+        do_work(result); 
+      }
+    });
+  } else {
+    hub.getRandomPartition(consumer_group, function(err, result) {
+      if(err) {
+        console.log("Unable to retrieve random partition.  Error: " + err);
+        process.exit(1);
+      } else {
+        do_work(result); 
+      }
+    });
+  }
 } else {
-  hub.getRandomPartition(consumer_group, function(err, result) {
+  // sending based on partition_key
+  hub.getEventProcessor(consumer_group, function(err, result) {
     if(err) {
-      console.log("Unable to retrieve random partition.  Error: " + err);
+      console.log("Unable to retrieve event processor for sending to partition key.  Error: " + err);
       process.exit(1);
     } else {
-      do_work(result); 
-    }
+      result.init(null, null, function(err) {
+        if(err) {
+          console.log("Unable to init event processor.  Error: " + err);
+          process.exit(1);
+        } else {
+          do_work(result); 
+        }
+      });
+    }  
   });
 }
