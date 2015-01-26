@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 var eventhub = require("..").eventhub;
 
-console.log(process.argv);
-
 var optimist = require('optimist')
     .options('e', { alias : 'eventhub' })
     .options('n', { alias : 'namespace' })

@@ -56,14 +56,14 @@ hub.getEventProcessor(consumer_group, function(err, result) {
     process.exit(1);
   }
 
+  if(optimist.argv.storagetable && optimist.argv.storagekey) {
+    processor.set_storage(optimist.argv.storagetable, optimist.argv.storagekey);
+  }
   processor.init(subscribe_callback, receive_callback, function(err, result) {
     if(err) {
       console.log("Unable to subscribe.  Error: " + err);
       process.exit(1);
     } else {
-      if(optimist.argv.storagetable && optimist.argv.storagekey) {
-        processor.set_storage(optimist.argv.storagetable, optimist.argv.storagekey);
-      }
       processor.receive();
     }
   });
