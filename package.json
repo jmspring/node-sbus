@@ -32,5 +32,11 @@
     "utf8": "*",
     "xml2js": "*",
     "optimist": "*"
+  },
+  "devDependencies": {
+    "jshint": "^2.5.11"
+  },
+  "scripts": {
+    "test": "jshint lib"
   }
 }
