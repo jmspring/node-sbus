@@ -35,6 +35,7 @@
     "should": "^4.0.4"
   },
   "scripts": {
-    "test": "jshint lib"
+    "pretest": "jshint lib",
+    "test": "mocha test"
   }
 }
