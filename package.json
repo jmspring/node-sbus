@@ -30,7 +30,9 @@
   },
   "devDependencies": {
     "optimist": "*",
-    "jshint": "^2.5.11"
+    "jshint": "^2.5.11",
+    "mocha": "^1.21.4",
+    "should": "^4.0.4"
   },
   "scripts": {
     "test": "jshint lib"
