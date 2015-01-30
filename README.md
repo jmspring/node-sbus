@@ -1,7 +1,10 @@
 Introduction
 ============
 
-A library for connecting to Azure Service Bus services via AMQP.
+[![Build Status](https://secure.travis-ci.org/noodlefrenzy/node-sbus.png?branch=master)](https://travis-ci.org/noodlefrenzy/node-sbus)
+[![Dependency Status](https://david-dm.org/noodlefrenzy/node-sbus.png)](https://david-dm.org/noodlefrenzy/node-sbus)
+
+`node-sbus` is library for connecting to Azure Service Bus services via AMQP.
 
 Currently, only Event Hub is supported and can be accessed by one of two methods:
 
