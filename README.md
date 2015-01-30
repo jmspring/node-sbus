@@ -12,7 +12,7 @@ The library operates by taking an AMQP provider and wrapping it in higher-level 
 to make it easy to run against Azure EventHub.  It can store state into Azure Table Storage as well, providing the seamless
 ability to continue receiving messages from where you left off - akin to the .NET EventProcessorHost.
 
-AMQP Processor Requirements
+AMQP Provider Requirements
 ===========================
 
 `node-sbus` relies on five simple methods to provide AMQP support - two for service bus, two for event hub, one for teardown:
@@ -45,4 +45,13 @@ AMQP Processor Requirements
 
 Any class implementing these five methods is duck-type compatible with `node-sbus` and can be used.
 
+Existing AMQP Providers
+=======================
+
+So far there are two AMQP providers we've been working on:
+
+* [node-sbus-amqp10](https://github.com/noodlefrenzy/node-sbus-amqp10): Based on [node-amqp-1-0](https://github.com/noodlefrenzy/node-amqp-1-0),
+  it provides a "no native code" AMQP implementation and should run on most if not all platforms.
+* [node-sbus-qpid](https://github.com/noodlefrenzy/node-sbus-qpid): Based on [node-qpid](https://github.com/jmspring/node-qpid),
+  it provides an AMQP implementation based on Apache's Qpid Proton.
 
