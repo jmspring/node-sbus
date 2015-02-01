@@ -15,8 +15,60 @@ The library operates by taking an AMQP provider and wrapping it in higher-level 
 to make it easy to run against Azure EventHub.  It can store state into Azure Table Storage as well, providing the seamless
 ability to continue receiving messages from where you left off - akin to the .NET EventProcessorHost.
 
+Usage
+=====
+
+To use this library, you need to provide it with an AMQP provider implementation (see below), and you can then access it as follows:
+
+To receive messages from all partitions of `myEventHub` in `myServiceBus`, and store state in `myTableStore`, with an AMQP Provider `AMQPProviderImpl`:
+
+    // Set up variables
+    var serviceBus = 'myServiceBus',
+        eventHubName = 'myEventHub',
+        sasKeyName = ..., // A SAS Key Name for the Event Hub, with Receive privilege
+        sasKey = ..., // The key value
+        tableStorageName = 'myTableStore',
+        tableStorageKey = ..., // The key for the above table store
+        consumerGroup = '$Default';
+
+    var Sbus = require('node-sbus');
+    var hub = Sbus.eventhub.EventHub.Instance(serviceBus, eventHubName, sasKeyName, sasKey, AMQPProviderImpl);
+    hub.getEventProcessor(consumerGroup, function (conn_err, processor) {
+      if (conn_err) { ... do something ... } else {
+        processor.set_storage(tableStorageName, tableStorageKey);
+        processor.init(function (rx_err, partition, payload) {
+          if (rx_err) { ... do something ... } else {
+            // Process the JSON payload
+          }
+        }, function (init_err) {
+          if (init_err) { ... do something ... } else {
+            processor.receive();
+          }
+        });
+      }
+    });
+
+For sending messages, it's equally easy:
+
+    // Set up variables as above
+
+    var Sbus = require('node-sbus');
+    var hub = Sbus.eventhub.EventHub.Instance(serviceBus, eventHubName, sasKeyName, sasKey, AMQPProviderImpl);
+    hub.getEventProcessor(consumerGroup, function (conn_err, processor) {
+      if (conn_err) { ... do something ... } else {
+        processor.set_storage(tableStorageName, tableStorageKey);
+        processor.init(function () { ... }, function (init_err) {
+          if (init_err) { ... do something ... } else {
+            processor.send({ 'myJSON': 'payload' }, 'partitionKey', function (tx_err) {
+              if (tx_err) { ... do something ... }
+            });
+          }
+        });
+      }
+    });
+
 AMQP Provider Requirements
-===========================
+==========================
 
 `node-sbus` relies on five simple methods to provide AMQP support - two for service bus, two for event hub, one for teardown:
 
