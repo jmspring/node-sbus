@@ -1,8 +1,8 @@
 Introduction
 ============
 
-[![Build Status](https://secure.travis-ci.org/noodlefrenzy/node-sbus.png?branch=master)](https://travis-ci.org/noodlefrenzy/node-sbus)
-[![Dependency Status](https://david-dm.org/noodlefrenzy/node-sbus.png)](https://david-dm.org/noodlefrenzy/node-sbus)
+[![Build Status](https://secure.travis-ci.org/jmspring/node-sbus.png?branch=master)](https://travis-ci.org/jmspring/node-sbus)
+[![Dependency Status](https://david-dm.org/jmspring/node-sbus.png)](https://david-dm.org/jmspring/node-sbus)
 
 `node-sbus` is a library for connecting to Azure Service Bus services via AMQP.
 
