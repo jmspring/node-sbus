@@ -15,7 +15,7 @@
     "amqp"
   ],
   "author": "Jim Spring <jmspring@gmail.com> (http://innerdot.com)",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/jmspring/node-sbus/issues"
   },
