@@ -1,6 +1,6 @@
 {
   "name": "node-sbus",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A library for using Azure Service Bus",
   "main": "index.js",
   "repository": {
