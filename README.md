@@ -48,24 +48,13 @@ To receive messages from all partitions of `myEventHub` in `myServiceBus`, and s
       }
     });
 
-For sending messages, it's equally easy:
+For sending messages, it's even easier:
 
     // Set up variables as above
 
     var Sbus = require('node-sbus');
     var hub = Sbus.eventhub.EventHub.Instance(serviceBus, eventHubName, sasKeyName, sasKey, AMQPProviderImpl);
-    hub.getEventProcessor(consumerGroup, function (conn_err, processor) {
-      if (conn_err) { ... do something ... } else {
-        processor.set_storage(tableStorageName, tableStorageKey);
-        processor.init(function () { ... }, function (init_err) {
-          if (init_err) { ... do something ... } else {
-            processor.send({ 'myJSON': 'payload' }, 'partitionKey', function (tx_err) {
-              if (tx_err) { ... do something ... }
-            });
-          }
-        });
-      }
-    });
+    hub.send({ 'myJSON': 'payload' }, 'partitionKey', function(tx_err) { });
 
 AMQP Provider Requirements
 ==========================
