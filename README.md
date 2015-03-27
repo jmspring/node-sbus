@@ -4,7 +4,7 @@ Introduction
 [![Build Status](https://secure.travis-ci.org/jmspring/node-sbus.png?branch=master)](https://travis-ci.org/jmspring/node-sbus)
 [![Dependency Status](https://david-dm.org/jmspring/node-sbus.png)](https://david-dm.org/jmspring/node-sbus)
 
-`node-sbus` is a library for connecting to Azure Service Bus services via AMQP.
+`sbus` is a library for connecting to Azure Service Bus services via AMQP.
 
 Currently, only Event Hub is supported and can be accessed by one of two methods:
 
@@ -31,7 +31,7 @@ To receive messages from all partitions of `myEventHub` in `myServiceBus`, and s
         tableStorageKey = ..., // The key for the above table store
         consumerGroup = '$Default';
 
-    var Sbus = require('node-sbus');
+    var Sbus = require('sbus');
     var hub = Sbus.eventhub.EventHub.Instance(serviceBus, eventHubName, sasKeyName, sasKey, AMQPProviderImpl);
     hub.getEventProcessor(consumerGroup, function (conn_err, processor) {
       if (conn_err) { ... do something ... } else {
@@ -52,14 +52,14 @@ For sending messages, it's even easier:
 
     // Set up variables as above
 
-    var Sbus = require('node-sbus');
+    var Sbus = require('sbus');
     var hub = Sbus.eventhub.EventHub.Instance(serviceBus, eventHubName, sasKeyName, sasKey, AMQPProviderImpl);
     hub.send({ 'myJSON': 'payload' }, 'partitionKey', function(tx_err) { });
 
 AMQP Provider Requirements
 ==========================
 
-`node-sbus` relies on five simple methods to provide AMQP support - two for service bus, two for event hub, one for teardown:
+`sbus` relies on five simple methods to provide AMQP support - two for service bus, two for event hub, one for teardown:
 
 * `send(uri, payload, cb)`
   * The URI should be the full AMQPS address you want to deliver to with included SAS name and key,
